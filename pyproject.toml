@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fpreputils"
+version = "0.1.0" # Replace this with the value dynamically loaded by `get_version`
+description = "fpreputils: specific workflows from fMRIprep including registration, motion correction, distortion correction, and confound generation. Designed for partial FOV acquisitions on which fMRIprep fails"
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Jurjen Heij", email = "jurjenheij@gmail.com" }]
+maintainers = [{ name = "Jurjen Heij", email = "jurjenheij@gmail.com" }]
+keywords = ["neuroimaging", "preprocessing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering",
+]
+# requires-python = ">=3.7, <3.11"
+dependencies = [
+    "ants",
+    "fmriprep",
+    "nibabel",
+    "nipype",
+    "niworkflows",
+    "pybids",
+    "numpy",
+    "lazyfmri @ git+https://github.com/gjheij/lazyfmri.git",
+    "fmriproc @ git+https://github.com/gjheij/fmriproc.git",
+]
+
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "flake8"]
+
+[tool.setuptools]
+packages = ["fpreputils"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+fmriproc = ["version.py"]
