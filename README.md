@@ -112,8 +112,8 @@ for runID in `seq 1 ${nr_runs}`; do
     mask=${DIR_DATA_HOME}/sub-${subID}/ses-${sesID}/func/sub-${subID}_ses-${sesID}_task-SRFi_run-${runID}_acq-3DEPI_desc-brain_mask.nii.gz
     
     # run; the output will now be named exactly like the original file
-    job="call_antsmotioncorr"
-    job="qsub -q short.q -N $(basename ${orig_file} _bold.nii.gz)_desc-moco -wd ${DIR_LOGS} ${DIR_SCRIPTS}/bin/call_antsmotioncorr"
+    call_=`which call_antsmotioncorr`
+    job="qsub -q short.q -N $(basename ${orig_file} _bold.nii.gz)_desc-moco -wd ${DIR_LOGS} ${call_}$"
 
     ${job} --in ${new_orig} --mask ${mask} --out ${out_base} --ref ${ref_file} --verbose
 done
@@ -178,9 +178,9 @@ masks=$(printf ",%s" "${masks[@]}")
 masks=${masks:1}
 
 # define job
-job="call_topup"
+call_=`which call_topup`
 n_jobs=10
-job="qsub -q short.q -pe smp ${n_jobs} -N sub-${subID}_ses-${sesID}_task-SRFi_acq-3DEPI_desc-topup -wd ${DIR_LOGS} ${DIR_SCRIPTS}/bin/call_topup"
+job="qsub -q short.q -pe smp ${n_jobs} -N sub-${subID}_ses-${sesID}_task-SRFi_acq-3DEPI_desc-topup -wd ${DIR_LOGS} ${call_}$"
 ${job} --sub ${subID} --ses ${sesID} --acq 3DEPI --mask ${masks} --wm ${wms} -j ${n_jobs}
 ```
 
@@ -193,9 +193,9 @@ for runID in `seq 1 ${nr_runs}`; do
     in_file=${DIR_DATA_DERIV}/fmriprep/sub-${subID}/ses-${sesID}/func/sub-${subID}_ses-${sesID}_task-SRFi_acq-3DEPI_run-${runID}_desc-preproc_bold.nii.gz
 
     # tfm_inv describes ses1-to-ses2job="call_topup"
-    job="call_confounds"
+    call_=`which call_confounds`
     n_jobs=1
-    job="qsub -q short.q -pe smp ${n_jobs} -N $(basename ${in_file} preproc_bold.nii.gz)confounds -wd ${DIR_LOGS} ${DIR_SCRIPTS}/bin/call_confounds"
+    job="qsub -q short.q -pe smp ${n_jobs} -N $(basename ${in_file} preproc_bold.nii.gz)confounds -wd ${DIR_LOGS} ${call_}$"
     ${job} -s sub-${subID} -n ${sesID} --in ${in_file} --tfm ${tfm_inv}
 done
 ```
@@ -219,9 +219,9 @@ for runID in `seq 1 ${nr_runs}`; do
     ref_anat=${DIR_DATA_DERIV}/fmriprep/sub-${subID}/ses-1/anat/sub-${subID}_ses-1_acq-MP2RAGE_desc-preproc_T1w.nii.gz
 
     # run bbregister
-    job="call_bbregwf"
+    call_=`which call_bbregwf`
     n_jobs=5
-    job="qsub -q short.q -pe smp ${n_jobs} -N $(basename ${ref_file} _boldref.nii.gz)_desc-bbregwf -wd ${DIR_LOGS} ${DIR_SCRIPTS}/bin/call_bbregwf"
+    job="qsub -q short.q -pe smp ${n_jobs} -N $(basename ${ref_file} _boldref.nii.gz)_desc-bbregwf -wd ${DIR_LOGS} ${call_}$"
     ${job} --in ${ref_file} --tfm ${matrix1} --ref ${ref_anat} --verbose
 
 done
