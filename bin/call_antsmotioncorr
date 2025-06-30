@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-import ants
-from lazyfmri import utils
-from nipype.interfaces import fsl
 import os
 import sys
+import ants
 import getopt
-import numpy as np
-from scipy.io import loadmat
 import subprocess
+import numpy as np
+from lazyfmri import utils
+from scipy.io import loadmat
+from nipype.interfaces import fsl
 from alive_progress import alive_bar
 rb = f"{utils.color.RED}{utils.color.BOLD}"
 gb = f"{utils.color.GREEN}{utils.color.BOLD}"
@@ -153,7 +153,8 @@ Example
         mask=mask_img,
         fdOffset=50,
         outprefix=output,
-        verbose=verbose)
+        verbose=verbose
+    )
     
     # saving motion corrected data
     moco_file = f"{output}_bold.nii.gz"
@@ -161,7 +162,17 @@ Example
     moco["motion_corrected"].to_filename(moco_file)
 
     # convert to SPM
-    moco_pars = np.concatenate([utils.ants_to_spm_moco(loadmat(x[0])['AffineTransform_float_3_3'], convention=fmt) for x in moco['motion_parameters']], axis=1).T
+    moco_pars = np.concatenate(
+        [
+            utils.ants_to_spm_moco(
+                loadmat(x[0])['AffineTransform_float_3_3'],
+                convention=fmt
+            )
+            for x in moco['motion_parameters']
+        ], 
+        axis=1
+    ).T
+    
     pars_file = f"{output}_desc-motionpars.txt"
     utils.verbose(f"Writing moco parameters [{rb}{fmt}{end}]: {gb}{pars_file}{end}", verbose)
     np.savetxt(pars_file, moco_pars, delimiter="\t")
@@ -176,7 +187,13 @@ Example
     _ = split.run()
 
     # filter vol* files into list
-    ref_vols = utils.get_file_from_substring(["vol"], utils.FindFiles(os.path.dirname(bold_file), extension=".nii.gz").files)
+    ref_vols = utils.get_file_from_substring(
+        ["vol"],
+        utils.FindFiles(
+            os.path.dirname(bold_file),
+            extension=".nii.gz"
+        ).files
+    )
 
     # double check..
     if len(ref_vols) != len(moco["motion_parameters"]):
@@ -194,7 +211,7 @@ Example
             out_xfm = "_".join(in_xfm.split("_")[:-1]+["xfm.mat"])
             trg = ref_vols[ix]
             cmd = f"call_ras2fsl {ref_file} {trg} {in_xfm} {out_xfm}"
-            os.system(cmd)
+            utils.run_shell_wrapper(cmd, verb=True)
             xfm_list.append(out_xfm)
 
             ## source code McFlirt: http://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages/centos6/fsl_507/src/mcflirt/mcflirt.cc
@@ -229,7 +246,7 @@ Example
         transform = "#Transform %d\n" % ix
         out_ = ff.split('.')[0]+'.txt'
         cmd = f"ConvertTransformFile 3 {ff} {out_}"
-        os.system(cmd)
+        utils.run_shell_wrapper(cmd, verb=True)
         with open(out_) as itkfh:
             transform += "".join(itkfh.readlines()[2:])
 

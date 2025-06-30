@@ -3,10 +3,10 @@
 import os
 import sys
 import getopt
-from fmriproc import transform
-from lazyfmri import utils
-from fpreputils import fmriprep
 import shutil
+from lazyfmri import utils
+from fmriproc import transform
+from fpreputils import fmriprep
 opj = os.path.join
 opd = os.path.dirname
 
@@ -154,7 +154,8 @@ Example
                     interp=interp, 
                     output=output,
                     return_type="file", 
-                    verbose=verbose)
+                    verbose=verbose
+                )
 
                 # set registered file as bold_file
                 in_file = reg_ref
@@ -202,7 +203,8 @@ Example
         omp_nthreads=cpus,
         use_bbr=True,
         bold2t1w_init=init,
-        bold2t1w_dof=dof)
+        bold2t1w_dof=dof
+    )
     
     # run wf
     wf.run()
@@ -242,7 +244,7 @@ Example
                 if ff.endswith(".mat"):
                     out_ = ff.split('.')[0]+'.txt'
                     cmd = f"ConvertTransformFile 3 {ff} {out_}"
-                    os.system(cmd)
+                    utils.run_shell_wrapper(cmd, verb=True)
                 else:
                     out_ = ff
                 
@@ -275,7 +277,7 @@ Example
             utils.verbose(f"Wrote '{trg}'", verbose)
 
         else:
-            for tag,out in zip(["fwd","inv"],["bold_to-T1w","T1w_to-bold"]):
+            for tag,out in zip(["fwd", "inv"], ["bold_to-T1w", "T1w_to-bold"]):
                 
                 # source file
                 src = utils.get_file_from_substring(tag, tfm_files)

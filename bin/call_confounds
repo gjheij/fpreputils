@@ -6,9 +6,9 @@ mkl.set_num_threads=1
 import os
 import sys
 import getopt
+import shutil
 from lazyfmri import utils
 from fpreputils import fmriprep
-import shutil
 opj = os.path.join
 
 def main(argv):
@@ -144,8 +144,19 @@ Example
     # search for default transformation
     if not isinstance(t1w_to_bold, str):
         if isinstance(subject, str) and isinstance(session, int):
-            ctx_dir = opj(os.environ.get("DIR_DATA_DERIV"), "pycortex", subject, "transforms")
-            t1w_to_bold = utils.get_file_from_substring([f"from-ses1_to-ses{session}_rec-motion1"], ctx_dir, exclude="command.txt")
+            ctx_dir = opj(
+                os.environ.get("DIR_DATA_DERIV"),
+                "pycortex",
+                subject,
+                "transforms"
+            )
+
+            t1w_to_bold = utils.get_file_from_substring(
+                [f"from-ses1_to-ses{session}_rec-motion1"],
+                ctx_dir,
+                exclude="command.txt"
+            )
+
             invert = 0
 
             if isinstance(t1w_to_bold, list):
@@ -159,7 +170,12 @@ Example
         if not isinstance(t1_tpms, str):
             if isinstance(subject, str):
                 if not isinstance(t1_mask, str):
-                    t1_tpms = opj(os.environ.get("DIR_DATA_DERIV"), "manual_masks", subject, "ses-1")
+                    t1_tpms = opj(
+                        os.environ.get("DIR_DATA_DERIV"),
+                        "manual_masks",
+                        subject,
+                        "ses-1"
+                    )
             else:
                 raise ValueError(f"Set subject flag to retrieve 'label-'/ and 'brainmask' files from '{opj(os.environ.get('DIR_DATA_DERIV'), 'manual_masks')}'")           
         else:
@@ -181,7 +197,11 @@ Example
         wf = utils.assemble_fmriprep_wf(bold_file)
         
         # combine
-        workdir = opj(os.environ.get('DIR_DATA_SOURCE'), base_dir, wf)
+        workdir = opj(
+            os.environ.get('DIR_DATA_SOURCE'),
+            base_dir,
+            wf
+        )
 
         # make it
         if not os.path.exists(workdir):
@@ -199,9 +219,10 @@ Example
         t1_mask=t1_mask,
         t1_tpms=t1_tpms,
         t1_bold_xform=t1w_to_bold,
-        invert=invert)
+        invert=invert
+    )
     
-    # remove workdir is overwrite == True
+    # remove workdir is overwrite
     if overwrite:
         fname = opj(workdir, "bold_confounds_wf")
         if os.path.exists(fname):

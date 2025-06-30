@@ -3,9 +3,9 @@
 import os
 import sys
 import getopt
+import shutil
 from lazyfmri import utils
 from fpreputils import fmriprep
-import shutil
 opj = os.path.join
 
 def main(argv):
@@ -234,9 +234,10 @@ Example
         workdir=workdir,
         bold_mask=bold_mask,
         wm_seg=wm_mask,
-        omp_nthreads=n_jobs)
+        omp_nthreads=n_jobs
+    )
     
-    # remove workdir is overwrite == True
+    # remove workdir is overwrite
     if overwrite:
         fname = opj(workdir, wf.name)
         if os.path.exists(fname):
