@@ -22,7 +22,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "ants",
+    "antspyx",
     "fmriprep==23.0.0",
     "nibabel",
     "nipype",
