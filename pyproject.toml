@@ -23,7 +23,7 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "ants",
-    "fmriprep",
+    "fmriprep==23.0.0",
     "nibabel",
     "nipype",
     "niworkflows",
@@ -45,3 +45,6 @@ include = ["fpreputils*"]
 
 [tool.setuptools.package-data]
 fpreputils = ["version.py"]
+
+[tool.setuptools.data-files]
+"bin" = ["bin/*"]
