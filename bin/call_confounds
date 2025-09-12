@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import mkl
-mkl.set_num_threads=1
-
 import os
 import sys
 import getopt
