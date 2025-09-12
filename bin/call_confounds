@@ -55,6 +55,9 @@ Parameters
                 if no list/string is specified, we'll default to 'DIR_DATA_DERIV/manual_masks/<sub-
                 ject>/ses-1 (if subject is specified with '-s|--sub'). Here we assume the same
                 file naming ('label-{GM|WM|CSF}')
+  --anat-ses    integer value representing the session from the anatomical file. This will culmi-
+                nate in a filepath: DIR_DATA_DERIV/manual_masks/<subject>/ses-<session>, to look
+                for anatomical masks.
 
 Example
 ----------
@@ -82,6 +85,7 @@ Example
     bold_file = None
     bids_dir = opj(os.environ.get("DIR_DATA_DERIV"), "fmriprep")
     workdir = None
+    anat_ses = 1
     bold_mask = None
     t1w_to_bold = None
     mov_file = None
@@ -93,7 +97,7 @@ Example
     overwrite = False
 
     try:
-        opts = getopt.getopt(argv,"hi:b:w:m:t:s:n:",["sub=", "ses=", "help", "in=", "bids=", "work=", "mask=", "tfm=", "mov=", "rms=", "apply", "t1_mask=", "tpms=", "invert=", "ow"])[0]
+        opts = getopt.getopt(argv,"hi:b:w:m:t:s:n:",["sub=", "ses=", "help", "in=", "bids=", "work=", "mask=", "tfm=", "mov=", "rms=", "apply", "t1-mask=", "tpms=", "invert=", "ow", "anat-ses="])[0]
     except getopt.GetoptError:
         print("ERROR while reading arguments; did you specify an illegal argument?")
         print(main.__doc__)
@@ -127,12 +131,14 @@ Example
             apply_mask = True
         elif opt in ("--apply"):
             apply_mask = True
-        elif opt in ("--t1_mask"):
+        elif opt in ("--t1-mask"):
             t1_mask = arg
         elif opt in ("--tpms"):
             t1_tpms = arg 
         elif opt in ("--invert"):
             invert = int(arg)
+        elif opt in ("--anat-ses"):
+            anat_ses = int(arg)            
 
     if len(argv) < 1:
         print(main.__doc__)
@@ -171,7 +177,7 @@ Example
                         os.environ.get("DIR_DATA_DERIV"),
                         "manual_masks",
                         subject,
-                        "ses-1"
+                        f"ses-{anat_ses}"
                     )
             else:
                 raise ValueError(f"Set subject flag to retrieve 'label-'/ and 'brainmask' files from '{opj(os.environ.get('DIR_DATA_DERIV'), 'manual_masks')}'")           
