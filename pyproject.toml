@@ -29,6 +29,7 @@ dependencies = [
     "niworkflows",
     "pybids",
     "numpy",
+    "scipy<1.15",
     "lazyfmri @ git+https://github.com/gjheij/lazyfmri.git",
     "fmriproc @ git+https://github.com/gjheij/fmriproc.git",
 ]
